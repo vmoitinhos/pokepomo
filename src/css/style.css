@@ -115,7 +115,7 @@ img.sprite, .sprite {
   transition: transform 0.08s steps(2), border-color 0.08s;
 }
 .starter-card:hover { transform: translate(-3px, -3px); border-color: var(--accent); box-shadow: 9px 9px 0 var(--shadow); }
-.starter-card img { width: 96px; height: 96px; }
+.starter-card img { width: 128px; height: 128px; }
 .starter-card .sc-name { font-size: 13px; margin-top: 10px; }
 .starter-card .sc-types { margin-top: 8px; }
 .starter-card .sc-desc { color: var(--ink-dim); font-size: 9px; margin-top: 10px; line-height: 1.7; }
@@ -188,14 +188,14 @@ img.sprite, .sprite {
 
 .sprite-stage {
   position: relative;
-  height: 170px;
+  height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
   background:
     radial-gradient(ellipse at 50% 78%, rgba(255, 203, 5, 0.14), transparent 62%);
 }
-.sprite-stage .sprite { width: 132px; height: 132px; }
+.sprite-stage .sprite { width: 160px; height: 160px; }
 .sprite-stage.idle .sprite { animation: bob 2.4s steps(2) infinite; }
 .sprite-stage.focusing { animation: glowPulse 1.6s ease-in-out infinite; }
 
@@ -363,7 +363,7 @@ img.sprite, .sprite {
   padding: 7px 9px;
   font-size: 8px;
 }
-.egg-item img { width: 30px; height: 30px; animation: wobble 2.2s steps(2) infinite; }
+.egg-item img { width: 32px; height: 32px; animation: wobble 2.2s steps(2) infinite; }
 @keyframes wobble { 0%, 82%, 100% { transform: rotate(0); } 86% { transform: rotate(-7deg); } 92% { transform: rotate(7deg); } }
 .egg-item.hint-glow { border-color: var(--accent); animation: glowPulse 1s ease-in-out infinite; }
 
@@ -380,7 +380,7 @@ img.sprite, .sprite {
 }
 .mini-mon:hover { border-color: var(--accent); }
 .mini-mon.active { border-color: var(--accent); background: #3a3f7d; }
-.mini-mon img { width: 34px; height: 34px; }
+.mini-mon img { width: 40px; height: 40px; }
 .mini-mon .mm-info { display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
 .mini-mon .mm-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mini-mon .mm-sub { color: var(--ink-dim); }
@@ -415,7 +415,7 @@ img.sprite, .sprite {
   padding: 3px 8px;
   border-radius: 8px;
 }
-.mon-card img { width: 84px; height: 84px; }
+.mon-card img { width: 96px; height: 96px; }
 .mon-card .mc-name { font-size: 10px; margin-top: 8px; }
 .mon-card .mc-sub { font-size: 8px; color: var(--ink-dim); margin-top: 5px; }
 .mon-card .mc-actions { display: flex; gap: 6px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
@@ -434,7 +434,7 @@ img.sprite, .sprite {
   text-align: center;
   position: relative;
 }
-.dex-cell img { width: 56px; height: 56px; }
+.dex-cell img { width: 64px; height: 64px; }
 .dex-cell.unknown img { filter: brightness(0) opacity(0.55); }
 .dex-cell .dex-id { font-size: 7px; color: var(--ink-dim); }
 .dex-cell .dex-name { font-size: 7px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -514,7 +514,7 @@ img.sprite, .sprite {
 
 .modal h3 { font-size: 14px; color: var(--accent); margin: 0 0 14px; }
 .modal p { font-size: 9px; color: var(--ink-dim); line-height: 2.1; }
-.modal .modal-sprite { width: 128px; height: 128px; }
+.modal .modal-sprite { width: 160px; height: 160px; }
 .modal .modal-sprite.hatching { animation: hatchShake 0.5s steps(2) infinite; }
 @keyframes hatchShake { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 .modal .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }

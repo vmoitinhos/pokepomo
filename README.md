@@ -4,8 +4,9 @@ A Pokemon-themed Pomodoro timer for the desktop. Focus in timed sections,
 earn XP with your equipped Pokemon, watch it level up and evolve, and
 occasionally find a Mystery Egg while you work.
 
-Built with Electron, vanilla JavaScript and hand-picked Gen 1 pixel-art
-sprites. Everything runs offline: the Pokedex data and sprites are bundled.
+Built with Electron, vanilla JavaScript and the FireRed/LeafGreen (GBA)
+64x64 sprites for all 151 Kanto Pokemon. Everything runs offline: the
+Pokedex data and sprites are bundled.
 
 ![PokePomo](assets/sprites/25.png)
 
@@ -78,7 +79,7 @@ src/
     audio.js         chiptune sound effects (Web Audio)
     app.js           UI controller
 data/pokedex.json    human-readable copy of the Gen 1 data
-assets/sprites/      152 pixel-art PNGs (151 Pokemon + egg)
+assets/sprites/      152 PNGs - FireRed/LeafGreen 64x64 sprites (151 + egg)
 assets/fonts/        Press Start 2P font
 tools/fetch_data.py  regenerates pokedex data + sprites (needs network)
 ```

@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Fetch Gen 1 (Kanto) Pokédex data and pixel-art sprites into local assets.
+"""Fetch Gen 1 (Kanto) Pokédex data and FireRed/LeafGreen sprites into assets.
 
 Produces:
-  tools/data/pokedex.json   - 151 species: name, types, stats, evolution chain, rarity
-  assets/sprites/<id>.png   - front sprite (Gen 1 Red/Blue pixel art)
-  assets/sprites/back/<id>.png
+  data/pokedex.json         - 151 species: name, types, stats, evolution, rarity
+  src/js/pokedex-data.js    - same data as a JS global for the renderer
+  assets/sprites/<id>.png   - front sprite (FireRed/LeafGreen, 64x64 GBA art)
   assets/sprites/egg.png
 """
 import json
 import os
+import struct
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from urllib.request import Request, urlopen
@@ -17,11 +18,10 @@ from urllib.error import HTTPError
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.abspath(os.path.join(ROOT, "..", "data"))
 SPRITE_DIR = os.path.abspath(os.path.join(ROOT, "..", "assets", "sprites"))
-BACK_DIR = os.path.join(SPRITE_DIR, "back")
 
 API = "https://pokeapi.co/api/v2"
 SPRITE_BASE = ("https://raw.githubusercontent.com/PokeAPI/sprites/master/"
-               "sprites/pokemon/versions/generation-i/red-blue")
+               "sprites/pokemon/versions/generation-iii/firered-leafgreen")
 EGG_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/egg.png"
 
 HEADERS = {"User-Agent": "pokepomo-offline-fetch/1.0"}
@@ -39,6 +39,29 @@ def get_bytes(url):
         return r.read()
 
 
+def read_png_header(path):
+    """Return (width, height, bit_depth, color_type, palette_len) for a PNG."""
+    with open(path, "rb") as f:
+        data = f.read()
+    if data[:8] != b"\x89PNG\r\n\x1a\n":
+        raise ValueError(f"not a PNG: {path}")
+    i = 8
+    width = height = bit_depth = color_type = None
+    palette_len = 0
+    while i < len(data):
+        length = struct.unpack(">I", data[i:i + 4])[0]
+        chunk = data[i + 4:i + 8]
+        if chunk == b"IHDR":
+            width, height, bit_depth, color_type, _, _, _ = struct.unpack(
+                ">IIBBBBB", data[i + 8:i + 8 + length])
+        elif chunk == b"PLTE":
+            palette_len = length // 3
+        elif chunk == b"IEND":
+            break
+        i += 12 + length
+    return width, height, bit_depth, color_type, palette_len
+
+
 def download_sprite(url, dest):
     try:
         blob = get_bytes(url)
@@ -53,7 +76,6 @@ def download_sprite(url, dest):
 def main():
     os.makedirs(DATA_DIR, exist_ok=True)
     os.makedirs(SPRITE_DIR, exist_ok=True)
-    os.makedirs(BACK_DIR, exist_ok=True)
 
     print("Fetching Gen 1 species list...")
     gen = get_json(f"{API}/generation/1")
@@ -152,11 +174,31 @@ def main():
         f.write(";\n")
     print("  wrote src/js/pokedex-data.js")
 
-    print("Downloading sprites...")
+    print("Downloading FireRed/LeafGreen sprites...")
+    missing = []
     with ThreadPoolExecutor(max_workers=12) as pool:
-        pool.map(lambda i: download_sprite(f"{SPRITE_BASE}/{i}.png",
-                                           os.path.join(SPRITE_DIR, f"{i}.png")), ids)
+        results = list(pool.map(
+            lambda i: (i, download_sprite(f"{SPRITE_BASE}/{i}.png",
+                                          os.path.join(SPRITE_DIR, f"{i}.png"))),
+            ids))
         download_sprite(EGG_URL, os.path.join(SPRITE_DIR, "egg.png"))
+
+    for i, ok in results:
+        if not ok:
+            missing.append(i)
+    if missing:
+        raise SystemExit(f"FAILED: {len(missing)} sprites missing: {missing}")
+
+    print("Verifying sprites...")
+    bad = []
+    for i in ids:
+        path = os.path.join(SPRITE_DIR, f"{i}.png")
+        w, h, _, _, _ = read_png_header(path)
+        if (w, h) != (64, 64):
+            bad.append((i, w, h))
+    if bad:
+        raise SystemExit(f"FAILED: unexpected sprite sizes: {bad[:10]}")
+    print(f"  {len(ids)} sprites OK (64x64)")
     print("  done")
 
 
