@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+  <title>PokePomo</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="titlebar-drag"></div>
+
+  <!-- ============ STARTER SELECTION ============ -->
+  <section id="screen-starter" class="screen hidden">
+    <div class="starter-wrap">
+      <h1 class="logo">POKE<span>POMO</span></h1>
+      <p class="tagline">Choose your first partner</p>
+      <div id="starter-cards" class="starter-cards"></div>
+      <p class="hint">Your partner gains XP while you focus. Break sessions and egg luck bring new friends.</p>
+    </div>
+  </section>
+
+  <!-- ============ MAIN APP ============ -->
+  <section id="screen-app" class="screen hidden">
+    <header class="topbar">
+      <div class="brand">POKE<span>POMO</span></div>
+      <nav class="tabs">
+        <button class="tab active" data-view="timer">TIMER</button>
+        <button class="tab" data-view="team">TEAM</button>
+        <button class="tab" data-view="dex">DEX</button>
+        <button class="tab" data-view="settings">SETTINGS</button>
+      </nav>
+      <div class="topbar-stats">
+        <span class="pill" id="pill-sessions">0 sessions</span>
+        <span class="pill" id="pill-focus">0 min</span>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- TIMER VIEW -->
+      <div class="view active" id="view-timer">
+        <div class="timer-grid">
+          <div class="panel pokemon-panel">
+            <div class="equipped-label">EQUIPPED</div>
+            <div class="sprite-stage" id="sprite-stage">
+              <img id="equipped-sprite" class="sprite" alt="" draggable="false" />
+              <div id="sprite-fx" class="sprite-fx"></div>
+            </div>
+            <div class="mon-name" id="equipped-name">—</div>
+            <div class="type-row" id="equipped-types"></div>
+            <div class="level-row">
+              <span class="level-badge" id="equipped-level">Lv.1</span>
+              <div class="xp-bar" title="XP to next level">
+                <div class="xp-fill" id="equipped-xp-fill"></div>
+                <span class="xp-text" id="equipped-xp-text">0 / 0 XP</span>
+              </div>
+            </div>
+            <div class="mon-stats" id="equipped-stats"></div>
+          </div>
+
+          <div class="panel timer-panel">
+            <div class="mode-label" id="mode-label">READY</div>
+            <div class="clock" id="clock">25:00</div>
+            <div class="progress-ring">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="section-dots" id="section-dots"></div>
+            <div class="section-caption" id="section-caption">Section 1 of 4</div>
+            <div class="controls">
+              <button class="btn primary" id="btn-start">START FOCUS</button>
+              <button class="btn" id="btn-pause" disabled>PAUSE</button>
+              <button class="btn ghost" id="btn-skip">SKIP</button>
+            </div>
+            <div class="xp-float" id="xp-float"></div>
+          </div>
+
+          <div class="panel side-panel">
+            <div class="side-title">EGGS</div>
+            <div class="egg-list" id="egg-list"></div>
+            <div class="side-title" id="team-side-title">PARTY</div>
+            <div class="mini-team" id="mini-team"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEAM VIEW -->
+      <div class="view" id="view-team">
+        <div class="panel">
+          <h2 class="panel-title">Your Team</h2>
+          <div class="team-grid" id="team-grid"></div>
+        </div>
+      </div>
+
+      <!-- DEX VIEW -->
+      <div class="view" id="view-dex">
+        <div class="panel">
+          <h2 class="panel-title">Kanto Pokedex <span class="dex-count" id="dex-count"></span></h2>
+          <div class="dex-grid" id="dex-grid"></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS VIEW -->
+      <div class="view" id="view-settings">
+        <div class="panel settings-panel">
+          <h2 class="panel-title">Timer Settings</h2>
+          <div class="field">
+            <label for="set-focus">Focus length (minutes)</label>
+            <div class="stepper">
+              <button class="stp" data-target="set-focus" data-delta="-1">-</button>
+              <input id="set-focus" type="number" min="1" max="180" value="25" />
+              <button class="stp" data-target="set-focus" data-delta="1">+</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="set-short">Short break (minutes)</label>
+            <div class="stepper">
+              <button class="stp" data-target="set-short" data-delta="-1">-</button>
+              <input id="set-short" type="number" min="1" max="60" value="5" />
+              <button class="stp" data-target="set-short" data-delta="1">+</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="set-long">Long break (minutes)</label>
+            <div class="stepper">
+              <button class="stp" data-target="set-long" data-delta="-1">-</button>
+              <input id="set-long" type="number" min="1" max="120" value="15" />
+              <button class="stp" data-target="set-long" data-delta="1">+</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="set-sections">Sections per cycle</label>
+            <div class="stepper">
+              <button class="stp" data-target="set-sections" data-delta="-1">-</button>
+              <input id="set-sections" type="number" min="1" max="12" value="4" />
+              <button class="stp" data-target="set-sections" data-delta="1">+</button>
+            </div>
+          </div>
+          <label class="check">
+            <input type="checkbox" id="set-autobreak" checked />
+            <span>Auto-start breaks</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="set-autofocus" />
+            <span>Auto-start next focus</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="set-sound" checked />
+            <span>Sound effects</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="set-notif" checked />
+            <span>Desktop notifications</span>
+          </label>
+
+          <h2 class="panel-title" style="margin-top:22px">Egg luck</h2>
+          <div class="field">
+            <label for="set-eggchance">Chance per focus section</label>
+            <div class="stepper">
+              <button class="stp" data-target="set-eggchance" data-delta="-1">-</button>
+              <input id="set-eggchance" type="number" min="0" max="100" step="1" value="14" />
+              <button class="stp" data-target="set-eggchance" data-delta="1">+</button>
+            </div>
+          </div>
+
+          <h2 class="panel-title" style="margin-top:22px">Data</h2>
+          <div class="save-path">Save file: <code id="save-path">…</code></div>
+          <div class="danger-row">
+            <button class="btn danger" id="btn-reset">RESET ALL DATA</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- ============ MODALS ============ -->
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div id="modal" class="modal"></div>
+  </div>
+
+  <div id="toast-wrap" class="toast-wrap"></div>
+
+  <script src="js/pokedex-data.js"></script>
+  <script src="js/pokedex.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/collection.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "name": "pokepomo",
+  "productName": "PokePomo",
+  "version": "1.0.0",
+  "description": "A Pokemon-themed Pomodoro timer for the desktop. Gen 1 pixel art, XP, levels, evolutions and egg luck.",
+  "main": "electron/main.js",
+  "author": "vmoitinhos",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win",
+    "dist:linux": "electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.vmoitinhos.pokepomo",
+    "productName": "PokePomo",
+    "files": [
+      "electron/**/*",
+      "src/**/*",
+      "data/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Utility"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.0.0"
+  }
+}
